@@ -3,14 +3,14 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-app.use(express.static('public'));
+app.use(express.static('static'));
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 app.get('/simulate', function(req, res){
-  res.sendFile(__dirname + '/simulate.html');
+  res.sendFile(__dirname + '/views/simulate.html');
 });
 
 io.on('connection', function(socket){

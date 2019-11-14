@@ -1,5 +1,5 @@
 {
-  "name": "pulsesocketserver",
+  "name": "heartsense_server",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
