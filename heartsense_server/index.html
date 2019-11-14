@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Heart Sense</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <script src="/p5.js"></script>
+    <script src="/p5.sound.js"></script>
+    
+    <script src='/socket.io/socket.io.js'></script>
+    
+    <script src="/sketch.js"></script>
+    <script src="/pulseSound.js"></script>
+
+    <script>
+        const CHORD_INTERVALS = [0, 4, 7, 11, 14, 17, 21, 24];
+        var playerIndexToId = [];
+        var pulses = {};
+        var nPlayers = 0;
+
+        var socket = io();
+
+        socket.emit('i_am_a_display');
+
+        document.addEventListener('p5-ready', function (e) { 
+            console.log('p5-ready');
+            socket.on('pulse', function(data) {
+                // console.log('pulse', data);
+                getUserPulse(data.userId).newPulse(data.data.ibi);
+            });
+            
+            socket.on('pulse_reset', function(data) {
+                console.log('reset', data);
+                getUserPulse(data.userId).reset();
+            });
+
+            socket.on('user_disconnected', function(data) {
+                console.log('disconnected', data);
+                console.log(data.userId, playerIndexToId, playerIndexToId.indexOf(data.userId))
+                let deleteIndex = playerIndexToId.indexOf(data.userId);
+                if (deleteIndex >= 0) {
+                    playerIndexToId[deleteIndex] = false;
+                }
+                delete pulses[data.userId];
+                nPlayers--;
+            });    
+        }, false);
+        
+        function getUserPulse (userId) {
+            if (pulses[userId] === undefined) {
+                let shouldAddNewPitch = true;
+                let pitchIndex = -1;
+                
+                for (let i = 0; i < playerIndexToId.length; i++) {
+                    if (playerIndexToId[i] === false) {
+                        shouldAddNewPitch = false;
+                        pitchIndex = i;
+                        break;
+                    }
+                }
+
+                if (pitchIndex == -1) {
+                    pitchIndex = nPlayers % CHORD_INTERVALS.length;
+                    playerIndexToId.push(userId);
+                } else {
+                    playerIndexToId[pitchIndex] = userId;
+                    console.log('replacing pitch', pitchIndex);
+                }
+                nPlayers++;
+
+                console.log('new player', CHORD_INTERVALS[pitchIndex]);
+                let baseFreq = movePitch(440, -7 + CHORD_INTERVALS[pitchIndex]);
+                pulses[userId] = new PulseSound(userId, baseFreq);
+
+                let i = 0;
+                for (let p in pulses) {
+                    let n = Object.keys(pulses).length;
+                    pulses[p].setPan(n > 1 ? (i / (n - 1) - 0.5) * 2 : 0);
+                    i++;
+                }
+
+            }
+            return pulses[userId];
+        }
+    </script>
+
+</body>
+</html>
