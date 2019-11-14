@@ -1,3 +1,5 @@
+#include "HeartSenseWifiConfig.h"
+
 #include <Arduino.h>
 
 #include <ESP8266WiFi.h>
@@ -13,17 +15,12 @@
 #define USE_ARDUINO_INTERRUPTS false
 #include <PulseSensorPlayground.h>
 
-#include <CapacitiveSensor.h>
+//#include <CapacitiveSensor.h>
 
 ESP8266WiFiMulti WiFiMulti;
 SocketIOclient socketIO;
 
 #define USE_SERIAL Serial
-
-const char* WIFI_SSID = "TaeBook";
-const char* WIFI_PWD = "0867802042";
-const char* SERVER_IP = "192.168.137.1";
-const int SERVER_PORT = 3000;
 
 const int OUTPUT_TYPE = SERIAL_PLOTTER;
 
