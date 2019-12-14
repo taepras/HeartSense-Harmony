@@ -9,24 +9,22 @@ Heart Sense: Harmony is an interactive experience in the Heart Sense series that
 
 1. Install [node.js](https://nodejs.org/)
 
-1. With this repository cloned to your computer, download all dependencies for the server by opening command prompt or terminal on this project folder, then enter commands:
+2. With this repository cloned to your computer, download all dependencies for the server by opening command prompt or terminal on this project folder, then enter commands:
 
-```
-cd heartsense_server
-npm install
-```
-
-
-2. Run the server from the `heartsense_server` folder with this command:
-
-```
-node app.js
-```
-
-(or use [nodemon](https://www.npmjs.com/package/nodemon) for auto-reloading)
+    ```
+    cd heartsense_server
+    npm install
+    ```
 
 
-3. Open https://localhost:3000 in your browser for the main page (Note that this will only work when there is an arduino connected)
+3. Run the server from the `heartsense_server` folder with this command (or use [nodemon](https://www.npmjs.com/package/nodemon) for auto-reloading):
+
+    ```
+    node app.js
+    ```
+
+
+4. Open https://localhost:3000 in your browser for the main page (Note that this will only work when there is an arduino connected)
 
 
 ### File Structure
@@ -65,7 +63,6 @@ These are the main files and folders you will need to look at to edit the code.
 
 4. Install these libraries in Arduino using Library Manager
 
-    - Adafruit Feather Library
     - PulseSensor Playground
     - ESP8266Wifi
     - WebSocket
@@ -77,7 +74,7 @@ These are the main files and folders you will need to look at to edit the code.
     - It is recommended that the computer running the server turns on WiFi hotspot, and have the Arduinos connect to them.
     - Follow this instruction to turn on your computer's WiFi hotspots - ([Mac](https://www.imore.com/how-turn-your-macs-internet-connection-wifi-hotspot-internet-sharing), [Windows](https://support.microsoft.com/en-us/help/4027762/windows-use-your-pc-as-a-mobile-hotspot))
     - Once the WiFi hotspot is set up, change `WIFI_SSID` and `WIFI_PWD` in `HeartSenseWifiConfig.h` to your WiFi's name and password.
-    - Find your `SERVER_IP` by follow this instructions ([Mac](http://osxdaily.com/2010/11/21/find-ip-address-mac/), [Windows](https://support.microsoft.com/en-us/help/15291/windows-find-pc-ip-address)). Note that you will need to look that the connection that is called "Local Area Connection" or "Hotspot" or something along this line.
+    - Find your `SERVER_IP` by following this instructions ([Mac](http://osxdaily.com/2010/11/21/find-ip-address-mac/), [Windows](https://support.microsoft.com/en-us/help/15291/windows-find-pc-ip-address)). Note that you will need to look that the connection that is called "Local Area Connection" or "Hotspot" or something along this line.
 
 6. Upload the code to your Arduino, if all is working and the server is running, you should be able to see the data showing in your web server's ternimal. Open the main page by opening https://localhost:3000 in your browser.
 
