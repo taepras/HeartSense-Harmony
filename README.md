@@ -31,7 +31,15 @@ node app.js
 
 ### File Structure
 
+These are the main files and folders you will need to look at to edit the code.
 
+- `/app.js` Main server file
+- `/static/js` Folder containing browser-based JavaScript files
+    - `/pulseSound.js` JavaScript class for a connection to an Arduino Heart Sense module
+    - `/sketch.js` JavaScript class for drawing the screen 
+- `/views` Folder containing web pages served by the server
+    - `/index.html` Main page displaying heart rate for 4 participants
+    - `/simulate.html` Sends simulated signal to the server for testing purposes. This page can be accessed at https://localhost:3000/simulate
 
 
 ## How to use: Arduino
