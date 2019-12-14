@@ -1,4 +1,4 @@
-# HeartSense:Harmony
+# HeartSense: Harmony
 
 Heart Sense: Harmony is an interactive experience in the Heart Sense series that utilizes sound and musical harmony to represent a person’s heartbeats and made apparent how their physiology interacts with other people in social interactions, in addition to Heart Sense’s argument about the nature of  incomplete and inaccurate representation of a person through data.
 
