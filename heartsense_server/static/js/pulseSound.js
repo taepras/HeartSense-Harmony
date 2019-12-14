@@ -10,10 +10,10 @@ const DEFAULT_IBI = 750;
 
 // sound envelope ADSRs
 const ENV_LEVEL_PULSE = 0.7;
-const ENV_A = 0.1; // attack
-const ENV_D = 0.005; // decay
+const ENV_A = 0.001; // attack
+const ENV_D = 0.01; // decay
 const ENV_S = 1; // sustain
-const ENV_R = 0.7; //release
+const ENV_R = 1; //release
 
 const ENV_LEVEL_INIT = 0.2;
 const ENV_A_INIT = 1; // attack
@@ -23,7 +23,7 @@ const ENV_R_INIT = 1.5; //release
 
 
 class PulseSound {
-    constructor(userId, baseFreq) {
+    constructor(userId, baseFreq, harmonics) {
         console.log('new pulsesound')
         this.color = {
             r: Math.floor(Math.random() * 255),
@@ -46,19 +46,48 @@ class PulseSound {
         this.currentIbiSmoothed = DEFAULT_IBI;
         this.baseIbiSmoothed = DEFAULT_IBI;
 
-        this.sinOsc = new p5.SinOsc(baseFreq);
-        this.env = new p5.Envelope();
+        // this.harmonics = [1, 0.68, 1.22, 0.13]//, 0.13, 0.12, 0.01, 0.02, 0.2, 0.06, 0.02];
+        // this.harmonics = [1, 9, 3.6, 1.8]//, 0.25, 0.12, 0.0];
+        // this.harmonics = [1, 0.12, 0.32, 0.06]//, 0.05, 0.05]//, 0.01, 0.02, 0.01];
+        this.harmonics = harmonics; //[1, 0.36, 0.26, 0.01]//, 0.07, 0.2]//, 0.02]
 
-        this.sinOsc.amp(this.env);
-        // this.sinOsc.amp(0.5);
-        this.sinOsc.start();
+        // normalize harmonics
+        let maxHarmonic = this.harmonics.reduce((a, b) => Math.max(a, b));
+        console.log(this.harmonics, maxHarmonic);
+        for (let i in this.harmonics){
+            this.harmonics[i] = this.harmonics[i] / maxHarmonic;
+        }
+        this.oscillators = [];
+        
+        // this.env = new p5.Envelope();
+        this.envs = [];
+
+        for (let i in this.harmonics) {
+            let env = new p5.Envelope();
+            env.setRange(ENV_LEVEL_INIT);
+            env.mult(this.harmonics[i]);
+            env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
+            env.play();
+            this.envs.push(env);
+
+            let osc = new p5.SinOsc(baseFreq * (i + 1));
+            // console.log(env)
+            osc.amp(env);
+            osc.freq(baseFreq * (i + 1));
+            osc.start();
+            this.oscillators.push(osc);
+        }
+        
+        // this.sinOsc = new p5.SinOsc(baseFreq);
+        // this.sinOsc.amp(this.env);
+        // this.sinOsc.start();
 
         // this.ibi = random(SIM_MIN_IBI, SIM_MAX_IBI);
 
-        this.sinOsc.freq(this.baseFreq);
-        this.env.setRange(ENV_LEVEL_INIT);
-        this.env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
-        this.env.play();
+        // this.sinOsc.freq(this.baseFreq);
+        // this.env.setRange(ENV_LEVEL_INIT);
+        // this.env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
+        // this.env.play();
 
         // this.reset();
 
@@ -74,10 +103,18 @@ class PulseSound {
         this.hasInited = false;
         console.log("pulse reset");
 
-        this.sinOsc.freq(this.baseFreq);
-        this.env.setRange(ENV_LEVEL_INIT);
-        this.env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
-        this.env.play();
+        // this.sinOsc.freq(this.baseFreq);
+        for (let i in this.harmonics) {
+            this.oscillators[i].freq(baseFreq * (i + 1));
+
+            this.envs[i].setRange(ENV_LEVEL_INIT);
+            this.envs[i].mult(this.harmonics[i]);
+            this.envs[i].setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
+            this.envs[i].play();
+        }
+        // this.env.setRange(ENV_LEVEL_INIT);
+        // this.env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
+        // this.env.play();
 
         this.initList = [];
 
@@ -147,10 +184,19 @@ class PulseSound {
         }
 
         // play sound
-        this.sinOsc.freq(this.currentFreq);
-        this.env.setRange(ENV_LEVEL_PULSE);
-        this.env.setADSR(ENV_A, ENV_D, ENV_S, ENV_R);
-        this.env.play();
+        // this.sinOsc.freq(this.currentFreq);
+        for (let i in this.harmonics) {
+            // console.log(this.currentFreq, i, this.currentFreq * 2, this.currentFreq * (+i + 1));
+            this.oscillators[i].freq(this.currentFreq * (+i + 1));
+            this.envs[i].setRange(ENV_LEVEL_PULSE);
+            this.envs[i].mult(this.harmonics[i]);
+            this.envs[i].setADSR(ENV_A, ENV_D, ENV_S, ENV_R);
+            this.envs[i].play();
+        }
+        
+        // this.env.setRange(ENV_LEVEL_PULSE);
+        // this.env.setADSR(ENV_A, ENV_D, ENV_S, ENV_R);
+        // this.env.play();
 
         console.log(
             this.userId, 
@@ -200,6 +246,9 @@ class PulseSound {
     }
 
     setPan(p) {
-        this.sinOsc.pan(p);
+        // this.sinOsc.pan(p);
+        for (let i in this.harmonics) {
+            this.oscillators[i].pan(p);
+        }
     }
 }

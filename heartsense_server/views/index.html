@@ -80,7 +80,20 @@
 
                 console.log('new player', CHORD_INTERVALS[pitchIndex]);
                 let baseFreq = movePitch(440, -7 + CHORD_INTERVALS[pitchIndex]);
-                pulses[userId] = new PulseSound(userId, baseFreq);
+                        // this.harmonics = [1, 0.68, 1.22, 0.13]//, 0.13, 0.12, 0.01, 0.02, 0.2, 0.06, 0.02];
+                // this.harmonics = [1, 9, 3.6, 1.8]//, 0.25, 0.12, 0.0];
+                let harmonics = [
+                    [1, 0.36, 0.26, 0.01],
+                    [1, 0.36, 0.26, 0.01],
+                    [1, 0.36, 0.26, 0.01],
+                    [1, 0.36, 0.26, 0.01]
+                    // [1, 9, 3.6, 1.8],//, 0.05, 0.05]//, 0.01, 0.02, 0.01];
+                    // [1, 0.12, 0.32, 0.06],
+                    // [1, 0.68, 1.22, 0.13],
+                    // [1, 0.36, 0.26, 0.01]
+                ];
+                // this.harmonics = harmonics; //[1, 0.36, 0.26, 0.01]//, 0.07, 0.2]//, 0.02]
+                pulses[userId] = new PulseSound(userId, baseFreq, harmonics[pitchIndex]);
 
                 let i = 0;
                 for (let p in pulses) {

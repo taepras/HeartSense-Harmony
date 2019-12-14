@@ -1,9 +1,62 @@
-# HeartSense-Harmony
-Heart Sense: Harmony
+# HeartSense:Harmony
 
-## How to Run Arduino Client
+Heart Sense: Harmony is an interactive experience in the Heart Sense series that utilizes sound and musical harmony to represent a person’s heartbeats and made apparent how their physiology interacts with other people in social interactions, in addition to Heart Sense’s argument about the nature of  incomplete and inaccurate representation of a person through data.
 
-1. Install Libraries
+
+## How to use: Web Server
+
+### Installation
+
+1. Install [node.js](https://nodejs.org/)
+
+1. With this repository cloned to your computer, download all dependencies for the server by opening command prompt or terminal on this project folder, then enter commands:
+
+```
+cd heartsense_server
+npm install
+```
+
+
+2. Run the server from the `heartsense_server` folder with this command:
+
+```
+node app.js
+```
+
+(or use [nodemon](https://www.npmjs.com/package/nodemon) for auto-reloading)
+
+
+3. Open https://localhost:3000 in your browser for the main page (Note that this will only work when there is an arduino connected)
+
+
+### File Structure
+
+
+
+
+## How to use: Arduino
+
+### Setting up
+
+1. For each arduino module, you will need:
+
+    - 1 Adafruit Feather with ESP 8266
+    - "Heart Sense" Shield OR
+    - 1 Pulse Sensor Module
+    - 1 60 Ohm or higher resistor.
+    - 3 of any identical resistors.
+    - 1 Li-Polymer Battery Pack
+    - 1 LED
+    - Jumper Wires
+
+2. Follow the schematic diagram below to connect all the components.
+
+![Heart Sense Module Schematic](/schematic.jpg)
+
+3. Follow [this instructions](https://learn.adafruit.com/adafruit-feather-huzzah-esp8266/using-arduino-ide) to install Adafruit Feather to your Arduino IDE.
+
+4. Install these libraries in Arduino using Library Manager
+
     - Adafruit Feather Library
     - PulseSensor Playground
     - ESP8266Wifi
@@ -11,21 +64,12 @@ Heart Sense: Harmony
     - ArduinoJson
     - CapacitiveSensor
 
-2. Change Configuration for Wifi Connection, IP Address, and Port
+5. Open the arduino file in `heartsense_arduino_client` folder and change the configuration for Wifi Connection, IP Address, and Port in `HeartSenseWifiConfig.h`
+    
+    - It is recommended that the computer running the server turns on WiFi hotspot, and have the Arduinos connect to them.
+    - Follow this instruction to turn on your computer's WiFi hotspots - ([Mac](https://www.imore.com/how-turn-your-macs-internet-connection-wifi-hotspot-internet-sharing), [Windows](https://support.microsoft.com/en-us/help/4027762/windows-use-your-pc-as-a-mobile-hotspot))
+    - Once the WiFi hotspot is set up, change `WIFI_SSID` and `WIFI_PWD` in `HeartSenseWifiConfig.h` to your WiFi's name and password.
+    - Find your `SERVER_IP` by follow this instructions ([Mac](http://osxdaily.com/2010/11/21/find-ip-address-mac/), [Windows](https://support.microsoft.com/en-us/help/15291/windows-find-pc-ip-address)). Note that you will need to look that the connection that is called "Local Area Connection" or "Hotspot" or something along this line.
 
-## How to Install & Run Server
+6. Upload the code to your Arduino, if all is working and the server is running, you should be able to see the data showing in your web server's ternimal. Open the main page by opening https://localhost:3000 in your browser.
 
-1. Download all dependencies for the server
-
-```
-cd heartsense_server
-npm install
-```
-
-2. Run the server
-
-```
-node app.js
-```
-
-(or use nodemon for auto-reloading)
