@@ -13,6 +13,10 @@ app.get('/simulate', function(req, res){
   res.sendFile(__dirname + '/views/simulate.html');
 });
 
+app.get('/simulate_control', function(req, res){
+  res.sendFile(__dirname + '/views/simulate_control.html');
+});
+
 io.on('connection', function(socket){
   
   let userId = socket.id;

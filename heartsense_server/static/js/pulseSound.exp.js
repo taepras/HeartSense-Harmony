@@ -5,7 +5,7 @@ const NUM_BEATS_FOR_INIT = 7;
 const IBI_DIFF_PER_PITCH_UNIT = 150; // approx 20 bpm from 80 to 100
 // const PITCH_UNIT = 4; // major third
 const PITCH_UNIT = 9; // majoy sixth
-const MAX_PITCH_CHANGE_PER_BEAT = 0.5; // quarter tone
+const MAX_PITCH_CHANGE_PER_BEAT = 0.1; // quarter tone
 const DEFAULT_IBI = 750;
 
 // sound envelope ADSRs
@@ -65,16 +65,16 @@ class PulseSound {
         this.envs = [];
 
         for (let i in this.harmonics) {
-            let env = new p5.Envelope();
-            env.setRange(ENV_LEVEL_INIT);
-            env.mult(this.harmonics[i]);
-            env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
-            env.play();
-            this.envs.push(env);
+            // let env = new p5.Envelope();
+            // env.setRange(ENV_LEVEL_INIT);
+            // env.mult(this.harmonics[i]);
+            // env.setADSR(ENV_A_INIT, ENV_D_INIT, ENV_S_INIT, ENV_R_INIT);
+            // env.play();
+            // this.envs.push(env);
 
             let osc = new p5.SinOsc(baseFreq * (i + 1));
             // console.log(env)
-            osc.amp(env);
+            // osc.amp(env);
             osc.freq(baseFreq * (i + 1));
             osc.start();
             this.oscillators.push(osc);
@@ -190,10 +190,10 @@ class PulseSound {
         for (let i in this.harmonics) {
             // console.log(this.currentFreq, i, this.currentFreq * 2, this.currentFreq * (+i + 1));
             this.oscillators[i].freq(this.currentFreq * (+i + 1));
-            this.envs[i].setRange(ENV_LEVEL_PULSE);
-            this.envs[i].mult(this.harmonics[i]);
-            this.envs[i].setADSR(ENV_A, ENV_D, ENV_S, ENV_R);
-            this.envs[i].play();
+            // this.envs[i].setRange(ENV_LEVEL_PULSE);
+            // this.envs[i].mult(this.harmonics[i]);
+            // this.envs[i].setADSR(ENV_A, ENV_D, ENV_S, ENV_R);
+            // this.envs[i].play();
         }
         
         // this.env.setRange(ENV_LEVEL_PULSE);
@@ -234,8 +234,14 @@ class PulseSound {
 
     setActive(active) {
         this.isActive = active;
+        
         if (!this.isActive) {
             reset();
+            for (let i in this.harmonics) {
+                this.oscillators[i].stop();
+            }
+        } else {
+            this.oscillators[i].start();
         }
     }
 

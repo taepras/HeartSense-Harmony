@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sim - Heart Sense</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .slider {
+            width: 100%;
+        }
+
+        .slider::-webkit-slider-thumb {
+           -webkit-appearance: none; /* Override default look */
+            appearance: none;
+            width: 25px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #4CAF50; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #4CAF50; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Pulse Simulator for Heart Sense</h1>
+    <input type="range" min="50" max="150" value="70" class="slider" id="heartrate">
+    <input type="checkbox" class="checkbox" id="heartrate-enable" checked="checked"> On
+
+    <div>
+        <span id="heartrate-display"></span> BPM
+    </div>
+
+    <hr>
+
+    <div id="log"></div>
+
+
+    <script src="js/perlin.js"></script>
+    <!-- <script src="/perlin.js"></script> -->
+    <script src='/socket.io/socket.io.js'></script>
+    
+    <script>
+        const MIN_IBI = 60000 / 70;
+        const MAX_IBI = 60000 / 105;
+        const NOISE_DILATION = 1000;
+
+        var socket = io();
+        var timeLastPulse = 0;
+        
+        var thisIbi = 750;
+
+        socket.emit('pulse_reset');
+        
+        noise.seed(Math.random());
+        
+        var hrInput = document.getElementById('heartrate');
+
+        function updateBPM () {
+            document.getElementById('heartrate-display').innerHTML = hrInput.value;
+            thisIbi = 60000 / hrInput.value;
+        }
+
+        updateBPM();
+        hrInput.addEventListener('input', updateBPM);
+
+        pulse();
+        function pulse() {
+            // thisIbi = 60000 / hrInput.value;
+            console.log(document.getElementById('heartrate-enable').checked);
+            if (document.getElementById('heartrate-enable').checked) {
+                socket.emit('pulse', {
+                    bpm: hrInput.value,
+                    ibi: thisIbi,
+                    ibi_calc: thisIbi,
+                });
+                // thisIbi = MIN_IBI + noise.perlin2(0, +new Date() / NOISE_DILATION) * (MAX_IBI - MIN_IBI);            
+                
+                let logger = document.getElementById('log');
+                logger.innerHTML = new Date() + '<br><b>IBI</b>: ' + thisIbi + '<br>';
+            }
+            
+            setTimeout(pulse, thisIbi);
+        }
+    </script>
+
+</body>
+</html>
